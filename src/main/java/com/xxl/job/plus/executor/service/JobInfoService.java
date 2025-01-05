@@ -11,4 +11,6 @@ public interface JobInfoService {
     Integer addJobInfo(XxlJobInfo xxlJobInfo);
 
     Integer updateTask(XxlJobInfo item);
+
+    Integer deleteTask(XxlJobInfo item);
 }

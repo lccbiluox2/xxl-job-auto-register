@@ -8,18 +8,20 @@ import java.util.List;
 
 public class AddOrUpdateTaskInfo {
     // 需要新增的task
-    List<XxlJobInfo> addTask = new ArrayList<>();
+    private List<XxlJobInfo> addTask = new ArrayList<>();
     // 需要更新的task
-    List<XxlJobInfo> updateTask = new ArrayList<>();
+    private  List<XxlJobInfo> updateTask = new ArrayList<>();
     // 相同的 需要忽略的task
-    List<XxlJobInfo> sameTask = new ArrayList<>();
+    private  List<XxlJobInfo> sameTask = new ArrayList<>();
+    // 应该删除的任务
+    private  List<XxlJobInfo> deleteTask = new ArrayList<>();
 
-    public AddOrUpdateTaskInfo(List<XxlJobInfo> addTask, List<XxlJobInfo> updateTask) {
+
+    public AddOrUpdateTaskInfo(List<XxlJobInfo> addTask, List<XxlJobInfo> updateTask, List<XxlJobInfo> deleteTask) {
         this.addTask = addTask;
         this.updateTask = updateTask;
+        this.deleteTask = deleteTask;
     }
-
-
 
     public List<XxlJobInfo> getAddTask() {
         return addTask;
@@ -43,5 +45,13 @@ public class AddOrUpdateTaskInfo {
 
     public void setSameTask(List<XxlJobInfo> sameTask) {
         this.sameTask = sameTask;
+    }
+
+    public List<XxlJobInfo> getDeleteTask() {
+        return deleteTask;
+    }
+
+    public void setDeleteTask(List<XxlJobInfo> deleteTask) {
+        this.deleteTask = deleteTask;
     }
 }

@@ -80,9 +80,22 @@ public abstract class XxlJobAutoRegister implements ApplicationListener<Applicat
         // 更新已存在的任务
         updateJobInfo(addOrUpdateTaskInfo.getUpdateTask());
 
+        deleteJobInfo(addOrUpdateTaskInfo.getDeleteTask());
+
         // 将数据写入到本地数据库
         addOrUpdateTaskToDb(addOrUpdateTaskInfo);
         log.info("所有任务同步完成.");
+    }
+
+    private void deleteJobInfo(List<XxlJobInfo> deleteTask) {
+        for (XxlJobInfo item : deleteTask) {
+            try {
+                Integer jobId = jobInfoService.deleteTask(item);
+                log.info("成功删除任务，任务ID: {}", jobId);
+            } catch (Exception e) {
+                log.error("删除任务过程中发生异常: ", e);
+            }
+        }
     }
 
     /**
@@ -91,6 +104,8 @@ public abstract class XxlJobAutoRegister implements ApplicationListener<Applicat
     private AddOrUpdateTaskInfo getAddOrUpdateTask(List<XxlJobInfo> allRemoteTask, List<XxlJobInfo> allLocalTask) {
         // 创建一个以 executorHandler 为键的任务映射，方便快速查找
         Map<String, XxlJobInfo> remoteTaskMap = allRemoteTask.stream()
+                .collect(Collectors.toMap(XxlJobInfo::getExecutorHandler, job -> job, (existing, replacement) -> existing));
+        Map<String, XxlJobInfo> localTaskMap = allLocalTask.stream()
                 .collect(Collectors.toMap(XxlJobInfo::getExecutorHandler, job -> job, (existing, replacement) -> existing));
 
         List<XxlJobInfo> addTask = new ArrayList<>();
@@ -113,7 +128,16 @@ public abstract class XxlJobAutoRegister implements ApplicationListener<Applicat
             }
         }
 
-        return new AddOrUpdateTaskInfo(addTask, updateTask);
+        List<XxlJobInfo> deleteTask = new ArrayList<>();
+        for (XxlJobInfo remote : allRemoteTask) {
+            String handler = remote.getExecutorHandler();
+            // 如果远程有的任务，但是本地没有了，那么需要删除
+            if (!localTaskMap.containsKey(handler)) {
+                deleteTask.add(remote);
+            }
+        }
+
+        return new AddOrUpdateTaskInfo(addTask, updateTask,deleteTask);
     }
 
     private XxlJobInfo createUpdateTaskInfo(XxlJobInfo local, XxlJobInfo remote) {
