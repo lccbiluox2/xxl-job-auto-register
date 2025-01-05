@@ -300,6 +300,7 @@ public abstract class XxlJobAutoRegister implements ApplicationListener<Applicat
         xxlJobInfo.setJobGroup(xxlJobGroup.getId());
         xxlJobInfo.setJobDesc(xxlRegister.jobDesc());
         xxlJobInfo.setAuthor(xxlRegister.author());
+        xxlJobInfo.setEditAble(xxlRegister.editAble());
         xxlJobInfo.setScheduleType("CRON");
         xxlJobInfo.setScheduleConf(xxlRegister.cron());
         xxlJobInfo.setGlueType("BEAN");

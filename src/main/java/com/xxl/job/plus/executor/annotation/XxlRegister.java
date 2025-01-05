@@ -13,6 +13,9 @@ public @interface XxlRegister {
 
     String jobDesc() default "default jobDesc";
 
+    // 是否可以编辑
+    boolean editAble() default true;
+
     String author() default "default Author";
 
     /*
